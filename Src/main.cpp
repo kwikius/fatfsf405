@@ -84,7 +84,7 @@ int main(void)
    f_mount(&FatFs, "", 0);
 
    FIL fil;       /* File object */
-   char line[82]; /* Line buffer */
+
    FRESULT fr  = f_open(&fil, "message.txt", FA_READ);
    bool success = false;
    const char * emsg = nullptr;
@@ -156,9 +156,13 @@ int main(void)
    }
 
    if (success){
+      char line[82]; /* Line buffer */
       /* Read all lines and display it */
       while (f_gets(line, sizeof line, &fil)){
-         serial_port::printf<100>("%s\n",line);
+         while (serial_port::get_tx_buffer_free_space() < sizeof line){
+            asm volatile ("nop":::);
+         }
+         serial_port::printf<sizeof line>("%s",line);
       }
       f_close(&fil);
    }else{
