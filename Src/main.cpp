@@ -33,6 +33,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 #include "fatfs.h"
+#include "../system/serial_port.hpp"
 
 /* USER CODE BEGIN Includes */
 
@@ -42,7 +43,7 @@
 SD_HandleTypeDef hsd;
 HAL_SD_CardInfoTypedef SDCardInfo;
 
-UART_HandleTypeDef huart1;
+
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
@@ -50,11 +51,11 @@ UART_HandleTypeDef huart1;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
-void SystemClock_Config(void);
 void Error_Handler(void);
+
 static void MX_GPIO_Init(void);
+
 static void MX_SDIO_SD_Init(void);
-static void MX_USART1_UART_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -69,108 +70,120 @@ FATFS FatFs;
 
 int main(void)
 {
+   MX_GPIO_Init();
+   serial_port::write("SD test\n");
+   MX_SDIO_SD_Init();
+   if ( BSP_SD_Init() != MSD_OK){
+      serial_port::write("Card init failed\n");
+      while (1) {;}
+   }
+   
+   MX_FATFS_Init();
 
-  /* USER CODE BEGIN 1 */
+   /* Register work area to the default drive */
+   f_mount(&FatFs, "", 0);
 
-  /* USER CODE END 1 */
+   FIL fil;       /* File object */
+   char line[82]; /* Line buffer */
+   FRESULT fr  = f_open(&fil, "message.txt", FA_READ);
+   bool success = false;
+   const char * emsg = nullptr;
+   switch (fr) {
+      case FR_OK :
+         success = true;
+         emsg = "no error";
+      break;
+      case FR_DISK_ERR:
+         emsg = "disk error";
+      break;
+      case FR_INT_ERR:
+         emsg = "internal error";
+      break;
+      case FR_NOT_READY:
+         emsg = "storage device not ready";
+      break;
+      case FR_NO_FILE:
+         emsg = "file not found";
+      break;
+      case FR_NO_PATH:
+         emsg = "invalid path";
+      break;
+      case FR_INVALID_NAME:
+         emsg = "invalid path name";
+      break;
+      case FR_DENIED:
+         emsg = "access denied";
+      break;
+      case FR_EXIST:
+         emsg = "file of same name exists already";
+      break;
+      case FR_INVALID_OBJECT:
+         emsg = "invalid object";
+      break;
+      case FR_WRITE_PROTECTED:
+         emsg = "file is write protected";
+      break;
+      case FR_INVALID_DRIVE:
+         emsg = "invalid drive";
+      break;
+      case  FR_NOT_ENABLED:
+         emsg = "not enabled";
+      break;
+      case FR_NO_FILESYSTEM:
+         emsg = "no filesystem";
+      break;
+      case FR_MKFS_ABORTED:
+         emsg = "mkfs aborted";
+      break;
+      case FR_TIMEOUT:
+         emsg = "fs timeout";
+      break;
+      case FR_LOCKED:
+         emsg = "fs locked";
+      break;
+      case FR_NOT_ENOUGH_CORE:
+         emsg = "out of memory";
+      break;
+      case FR_TOO_MANY_OPEN_FILES:
+         emsg = "too many open files";
+      break;
+      case FR_INVALID_PARAMETER:
+         emsg = "invalid parameter";
+      break;
+      default:
+         emsg = "unknown error";
+      break;
+   }
 
-  /* MCU Configuration----------------------------------------------------------*/
+   if (success){
+      /* Read all lines and display it */
+      while (f_gets(line, sizeof line, &fil)){
+         serial_port::printf<100>("%s\n",line);
+      }
+      f_close(&fil);
+   }else{
+      serial_port::write("file open failed\n");
+      serial_port::write(emsg);
+      serial_port::write("\n");
+   }
 
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
-
-  /* Configure the system clock */
-  SystemClock_Config();
-
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_SDIO_SD_Init();
-  MX_USART1_UART_Init();
-  MX_FATFS_Init();
-
-    /* Register work area to the default drive */
-    f_mount(&FatFs, "", 0);
-
-    FIL fil;       /* File object */
-    char line[82]; /* Line buffer */
-    FRESULT fr;    /* FatFs return code */
-
-    /* Open a text file */
-    fr = f_open(&fil, "message.txt", FA_READ);
-    if (fr) //return (int)fr;
-
-    /* Read all lines and display it */
-    while (f_gets(line, sizeof line, &fil)){
-        //printf(line);
-    }
-
-    /* Close the file */
-    f_close(&fil);
-
-   // return 0;
-  /* USER CODE BEGIN 2 */
-
-  /* USER CODE END 2 */
-
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-  /* USER CODE END WHILE */
-
-  /* USER CODE BEGIN 3 */
-
-  }
-  /* USER CODE END 3 */
+   while (1){
+      asm volatile ("nop":::);
+   }
 
 }
 
-/** System Clock Configuration
-*/
-void SystemClock_Config(void)
+static void MX_GPIO_Init(void)
 {
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOH_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
 
-  RCC_OscInitTypeDef RCC_OscInitStruct;
-  RCC_ClkInitTypeDef RCC_ClkInitStruct;
-
-  __HAL_RCC_PWR_CLK_ENABLE();
-
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = 16;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = 8;
-  RCC_OscInitStruct.PLL.PLLN = 168;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = 7;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
-
-  HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
-
-  /* SysTick_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 }
 
-/* SDIO init function */
+
 static void MX_SDIO_SD_Init(void)
 {
 
@@ -184,59 +197,6 @@ static void MX_SDIO_SD_Init(void)
 
 }
 
-/* USART1 init function */
-static void MX_USART1_UART_Init(void)
-{
-
-  huart1.Instance = USART1;
-  huart1.Init.BaudRate = 115200;
-  huart1.Init.WordLength = UART_WORDLENGTH_8B;
-  huart1.Init.StopBits = UART_STOPBITS_1;
-  huart1.Init.Parity = UART_PARITY_NONE;
-  huart1.Init.Mode = UART_MODE_TX_RX;
-  huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
-  if (HAL_UART_Init(&huart1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-}
-
-/** Configure pins as 
-        * Analog 
-        * Input 
-        * Output
-        * EVENT_OUT
-        * EXTI
-*/
-static void MX_GPIO_Init(void)
-{
-
-  GPIO_InitTypeDef GPIO_InitStruct;
-
-  /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOH_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOD_CLK_ENABLE();
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin : PB12 */
-  GPIO_InitStruct.Pin = GPIO_PIN_12;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-}
-
-/* USER CODE BEGIN 4 */
-
-/* USER CODE END 4 */
 
 /**
   * @brief  This function is executed in case of error occurrence.

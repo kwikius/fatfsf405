@@ -33,6 +33,8 @@
 /* USER CODE BEGIN 0 */
 /* Includes ------------------------------------------------------------------*/
 #include "bsp_driver_sd.h"
+#include "../system/led_c.h"
+#include "../system/sp.h"
 
 /* Extern variables ---------------------------------------------------------*/ 
   
@@ -49,6 +51,7 @@ uint8_t BSP_SD_Init(void)
   /* Check if the SD card is plugged in the slot */
   if (BSP_SD_IsDetected() != SD_PRESENT)
   {
+    sp_write("card not detected\n");
     return MSD_ERROR;
   }
   /* HAL SD initialization */
@@ -68,6 +71,9 @@ uint8_t BSP_SD_Init(void)
     }
   }
 #endif
+  if ( sd_state != MSD_OK){
+      sp_write("call to HAL_SD_Init failed\n");
+  }
   return sd_state;
 }
 

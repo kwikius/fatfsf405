@@ -21,7 +21,7 @@
   required by sprintf when floating point arg is required
 */
 
-//extern "C"{
+extern "C"{
   // used by sprintf for static alloc
 /* Extend heap space by size bytes.
    Return start of new space allocated, or -1 for errors 
@@ -50,4 +50,4 @@
 	  heap_ptr = new_heap_ptr;
 	  return (void *)old_heap_ptr;
 	}
-// } // extern "C"
+} // extern "C"
