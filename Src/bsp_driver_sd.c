@@ -38,23 +38,27 @@
 
 /* Extern variables ---------------------------------------------------------*/ 
   
-extern SD_HandleTypeDef hsd;
-extern HAL_SD_CardInfoTypedef SDCardInfo; 
+static SD_HandleTypeDef hsd;
 
+static void MX_SDIO_SD_Init(void);
 /**
   * @brief  Initializes the SD card device.
   * @retval SD status
   */
 uint8_t BSP_SD_Init(void)
 {
+
+  MX_SDIO_SD_Init();
+
   uint8_t sd_state = MSD_OK;
   /* Check if the SD card is plugged in the slot */
   if (BSP_SD_IsDetected() != SD_PRESENT)
   {
-    sp_write("card not detected\n");
+    sp_write("No SD card detected\n");
     return MSD_ERROR;
   }
   /* HAL SD initialization */
+  HAL_SD_CardInfoTypedef SDCardInfo; 
   sd_state = HAL_SD_Init(&hsd, &SDCardInfo);
 #ifdef BUS_4BITS
   /* Configure SD Bus width */
@@ -75,6 +79,19 @@ uint8_t BSP_SD_Init(void)
       sp_write("call to HAL_SD_Init failed\n");
   }
   return sd_state;
+}
+
+static void MX_SDIO_SD_Init(void)
+{
+
+  hsd.Instance = SDIO;
+  hsd.Init.ClockEdge = SDIO_CLOCK_EDGE_RISING;
+  hsd.Init.ClockBypass = SDIO_CLOCK_BYPASS_DISABLE;
+  hsd.Init.ClockPowerSave = SDIO_CLOCK_POWER_SAVE_DISABLE;
+  hsd.Init.BusWide = SDIO_BUS_WIDE_1B;
+  hsd.Init.HardwareFlowControl = SDIO_HARDWARE_FLOW_CONTROL_DISABLE;
+  hsd.Init.ClockDiv = 0;
+
 }
 
 /**
