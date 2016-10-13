@@ -56,7 +56,7 @@ LFLAGS = -T$(STM32F4_LINKER_SCRIPT) -Os $(PROCESSOR_FLAGS) $(CFLAG_EXTRAS) $(INI
 
 Src_objects_C =  $(patsubst %,$(OBJDIR)%, bsp_driver_sd.o  fatfs.o  stm32f4xx_hal_msp.o  stm32f4xx_it.o)
 
-user_objects_CXX =  $(patsubst %,$(OBJDIR)%, main.o read_file.o)
+user_objects_CXX =  $(patsubst %,$(OBJDIR)%, sd_card_init.o main.o read_file.o write_file.o file_error_msg.o)
 
 system_objects = $(patsubst %,$(OBJDIR)%, system_init.o setup.o led.o serial_port.o spbrk.o)
 
