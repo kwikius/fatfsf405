@@ -85,6 +85,8 @@ int main(void)
 
    FIL fil;       /* File object */
 
+   serial_port::write("\n--------------opening message.txt-------------------------------------------\n\n");
+
    FRESULT fr  = f_open(&fil, "message.txt", FA_READ);
    bool success = false;
    const char * emsg = nullptr;
@@ -165,6 +167,7 @@ int main(void)
          serial_port::printf<sizeof line>("%s",line);
       }
       f_close(&fil);
+      serial_port::write("\n-------------closed message.txt-------------------------------------------\n\n");
    }else{
       serial_port::write("file open failed\n");
       serial_port::write(emsg);
