@@ -33,17 +33,17 @@
 
 #include "fatfs.h"
 
-uint8_t retSD;    /* Return value for SD */
-char SD_Path[4];  /* SD logical drive path */
+//uint8_t retSD;    /* Return value for SD */
+static char SD_Path[4];  /* SD logical drive path */
 
 /* USER CODE BEGIN Variables */
 
 /* USER CODE END Variables */    
 
-void MX_FATFS_Init(void) 
+uint8_t MX_FATFS_Init(void) 
 {
   /*## FatFS: Link the SD driver ###########################*/
-  retSD = FATFS_LinkDriver(&SD_Driver, SD_Path);
+  return FATFS_LinkDriver(&SD_Driver, SD_Path);
 
   /* USER CODE BEGIN Init */
   /* additional user code for init */     

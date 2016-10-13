@@ -42,18 +42,11 @@
 #include "ff_gen_drv.h"
 #include "sd_diskio.h" /* defines SD_Driver as external */
 
-/* USER CODE BEGIN Includes */
+//extern uint8_t retSD; /* Return value for SD */
+//extern char SD_Path[4]; /* SD logical drive path */
 
-/* USER CODE END Includes */
+uint8_t MX_FATFS_Init(void);
 
-extern uint8_t retSD; /* Return value for SD */
-extern char SD_Path[4]; /* SD logical drive path */
-
-void MX_FATFS_Init(void);
-
-/* USER CODE BEGIN Prototypes */
-
-/* USER CODE END Prototypes */
 #ifdef __cplusplus
 }
 #endif
