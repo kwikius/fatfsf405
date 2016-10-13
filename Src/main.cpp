@@ -35,22 +35,17 @@
 #include "fatfs.h"
 #include "../system/serial_port.hpp"
 
-SD_HandleTypeDef hsd;
-HAL_SD_CardInfoTypedef SDCardInfo;
-
 void Error_Handler(void);
 
 static void MX_GPIO_Init(void);
 
-static void MX_SDIO_SD_Init(void);
-
-FATFS FatFs; 
+static FATFS FatFs; 
 
 int main(void)
 {
    MX_GPIO_Init();
    serial_port::write("SD test\n");
-   MX_SDIO_SD_Init();
+   
    if ( BSP_SD_Init() != MSD_OK){
       serial_port::write("Card init failed\n");
       while (1) {;}
@@ -168,21 +163,6 @@ static void MX_GPIO_Init(void)
 
 }
 
-
-static void MX_SDIO_SD_Init(void)
-{
-
-  hsd.Instance = SDIO;
-  hsd.Init.ClockEdge = SDIO_CLOCK_EDGE_RISING;
-  hsd.Init.ClockBypass = SDIO_CLOCK_BYPASS_DISABLE;
-  hsd.Init.ClockPowerSave = SDIO_CLOCK_POWER_SAVE_DISABLE;
-  hsd.Init.BusWide = SDIO_BUS_WIDE_1B;
-  hsd.Init.HardwareFlowControl = SDIO_HARDWARE_FLOW_CONTROL_DISABLE;
-  hsd.Init.ClockDiv = 0;
-
-}
-
-
 /**
   * @brief  This function is executed in case of error occurrence.
   * @param  None
@@ -218,12 +198,3 @@ void assert_failed(uint8_t* file, uint32_t line)
 
 #endif
 
-/**
-  * @}
-  */ 
-
-/**
-  * @}
-*/ 
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
