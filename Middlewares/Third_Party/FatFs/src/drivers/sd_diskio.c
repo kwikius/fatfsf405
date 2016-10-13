@@ -49,7 +49,7 @@ DRESULT SD_read (BYTE, BYTE*, DWORD, UINT);
   DRESULT SD_ioctl (BYTE, BYTE, void*);
 #endif  /* _USE_IOCTL == 1 */
   
-const Diskio_drvTypeDef  SD_Driver =
+static const Diskio_drvTypeDef  SD_Driver =
 {
   SD_initialize,
   SD_status,
@@ -62,6 +62,11 @@ const Diskio_drvTypeDef  SD_Driver =
   SD_ioctl,
 #endif /* _USE_IOCTL == 1 */
 };
+
+Diskio_drvTypeDef const*  get_SD_Driver()
+{
+   return &SD_Driver;
+}
 
 /* Private functions ---------------------------------------------------------*/
 
