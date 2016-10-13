@@ -35,36 +35,14 @@
 #include "fatfs.h"
 #include "../system/serial_port.hpp"
 
-/* USER CODE BEGIN Includes */
-
-/* USER CODE END Includes */
-
-/* Private variables ---------------------------------------------------------*/
 SD_HandleTypeDef hsd;
 HAL_SD_CardInfoTypedef SDCardInfo;
 
-
-
-/* USER CODE BEGIN PV */
-/* Private variables ---------------------------------------------------------*/
-
-/* USER CODE END PV */
-
-/* Private function prototypes -----------------------------------------------*/
 void Error_Handler(void);
 
 static void MX_GPIO_Init(void);
 
 static void MX_SDIO_SD_Init(void);
-
-/* USER CODE BEGIN PFP */
-/* Private function prototypes -----------------------------------------------*/
-
-/* USER CODE END PFP */
-
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
 
 FATFS FatFs; 
 
