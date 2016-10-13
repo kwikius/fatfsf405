@@ -56,7 +56,7 @@ LFLAGS = -T$(STM32F4_LINKER_SCRIPT) -Os $(PROCESSOR_FLAGS) $(CFLAG_EXTRAS) $(INI
 
 Src_objects_C =  $(patsubst %,$(OBJDIR)%, bsp_driver_sd.o  fatfs.o  stm32f4xx_hal_msp.o  stm32f4xx_it.o)
 
-Src_objects_CXX =  $(patsubst %,$(OBJDIR)%, main.o )
+user_objects_CXX =  $(patsubst %,$(OBJDIR)%, main.o read_file.o)
 
 system_objects = $(patsubst %,$(OBJDIR)%, system_init.o setup.o led.o serial_port.o spbrk.o)
 
@@ -68,7 +68,7 @@ stm32_objects  = $(patsubst %,$(OBJDIR)%,  stm32f4xx_hal_cortex.o \
   stm32f4xx_hal_gpio.o stm32f4xx_hal_rcc.o stm32f4xx_hal_sd.o stm32f4xx_hal_tim.o \
   stm32f4xx_hal_tim_ex.o stm32f4xx_hal_uart.o stm32f4xx_hal_dma.o stm32f4xx_ll_sdmmc.o )
 
-objects = $(Src_objects_C) $(Src_objects_CXX) $(system_objects) $(fatfs_src_objects) $(fatfs_driver_objects) \
+objects = $(Src_objects_C) $(user_objects_CXX) $(system_objects) $(fatfs_src_objects) $(fatfs_driver_objects) \
  $(OBJDIR)startup.o $(stm32_objects) 
 
 all: test
@@ -95,7 +95,7 @@ $(fatfs_driver_objects) : $(OBJDIR)%.o : Middlewares/Third_Party/FatFs/src/drive
 $(Src_objects_C) : $(OBJDIR)%.o : Src/%.c
 	$(CC) $(CFLAGS) $< -o $@
 
-$(Src_objects_CXX) : $(OBJDIR)%.o : Src/%.cpp
+$(user_objects_CXX) : $(OBJDIR)%.o : %.cpp
 	$(CXX) $(CFLAGS) $(CPLUSPLUSFLAGS) $< -o $@
 
 $(system_objects): $(OBJDIR)%.o : system/%.cpp
