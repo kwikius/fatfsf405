@@ -34,6 +34,7 @@ extern "C" {
 /* Definitions of volume management */
 
 #if _MULTI_PARTITION		/* Multiple partition configuration */
+#error multi partition not supported
 typedef struct {
 	BYTE pd;	/* Physical drive number */
 	BYTE pt;	/* Partition: 0:Auto detect, 1-4:Forced partition) */
@@ -143,7 +144,6 @@ typedef struct {
 #endif
 
 } FIL;
-
 
 
 /* Directory object structure (DIR) */
