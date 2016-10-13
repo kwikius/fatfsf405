@@ -39,13 +39,8 @@
 #include "diskio.h"
 #include "ff_gen_drv.h"
 
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
-extern Disk_drvTypeDef  disk;
-
-/* Private function prototypes -----------------------------------------------*/
-/* Private functions ---------------------------------------------------------*/
+//extern Disk_drvTypeDef  disk;
+Disk_drvTypeDef* get_DiskDrive();
 
 /**
   * @brief  Gets Disk Status 
@@ -56,9 +51,10 @@ DSTATUS disk_status (
 	BYTE pdrv		/* Physical drive nmuber to identify the drive */
 )
 {
+  Disk_drvTypeDef* disk = get_DiskDrive();
   DSTATUS stat;
   
-  stat = disk.drv[pdrv]->disk_status(disk.lun[pdrv]);
+  stat = disk->drv[pdrv]->disk_status(disk->lun[pdrv]);
   return stat;
 }
 
@@ -71,12 +67,12 @@ DSTATUS disk_initialize (
 	BYTE pdrv				/* Physical drive nmuber to identify the drive */
 )
 {
+  Disk_drvTypeDef* disk = get_DiskDrive();
   DSTATUS stat = RES_OK;
-  
-  if(disk.is_initialized[pdrv] == 0)
+  if(disk->is_initialized[pdrv] == 0)
   { 
-    disk.is_initialized[pdrv] = 1;
-    stat = disk.drv[pdrv]->disk_initialize(disk.lun[pdrv]);
+    disk->is_initialized[pdrv] = 1;
+    stat = disk->drv[pdrv]->disk_initialize(disk->lun[pdrv]);
   }
   return stat;
 }
@@ -96,10 +92,8 @@ DRESULT disk_read (
 	UINT count		/* Number of sectors to read */
 )
 {
-  DRESULT res;
- 
-  res = disk.drv[pdrv]->disk_read(disk.lun[pdrv], buff, sector, count);
-  return res;
+  Disk_drvTypeDef* disk = get_DiskDrive();
+  return disk->drv[pdrv]->disk_read(disk->lun[pdrv], buff, sector, count);
 }
 
 /**
@@ -118,10 +112,8 @@ DRESULT disk_write (
 	UINT count        	/* Number of sectors to write */
 )
 {
-  DRESULT res;
-  
-  res = disk.drv[pdrv]->disk_write(disk.lun[pdrv], buff, sector, count);
-  return res;
+  Disk_drvTypeDef* disk = get_DiskDrive();
+  return disk->drv[pdrv]->disk_write(disk->lun[pdrv], buff, sector, count);
 }
 #endif /* _USE_WRITE == 1 */
 
@@ -139,10 +131,8 @@ DRESULT disk_ioctl (
 	void *buff		/* Buffer to send/receive control data */
 )
 {
-  DRESULT res;
-
-  res = disk.drv[pdrv]->disk_ioctl(disk.lun[pdrv], cmd, buff);
-  return res;
+  Disk_drvTypeDef* disk = get_DiskDrive();
+  return disk->drv[pdrv]->disk_ioctl(disk->lun[pdrv], cmd, buff);
 }
 #endif /* _USE_IOCTL == 1 */
 

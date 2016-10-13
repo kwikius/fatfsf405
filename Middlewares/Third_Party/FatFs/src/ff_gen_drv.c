@@ -31,7 +31,12 @@
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-Disk_drvTypeDef disk = {{0},{0},{0},0};
+static Disk_drvTypeDef disk = {{0},{0},{0},0};
+
+Disk_drvTypeDef* get_DiskDrive()
+{
+   return &disk;
+}
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
