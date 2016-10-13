@@ -56,10 +56,8 @@ int main(void)
    /* Register work area to the default drive */
    f_mount(&FatFs, "", 0);
 
-   FIL fil;       /* File object */
-
    serial_port::write("\n--------------opening message.txt-------------------------------------------\n\n");
-
+   FIL fil;       /* File object */
    FRESULT fr  = f_open(&fil, "message.txt", FA_READ);
    bool success = false;
    const char * emsg = nullptr;
