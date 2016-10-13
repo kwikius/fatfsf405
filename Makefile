@@ -47,7 +47,7 @@ CPFLAGS = -Obinary
 ODFLAGS = -d
 
 CPLUSPLUSFLAGS = -std=c++11 -fno-rtti -fno-exceptions
-CFLAGS =  -c -Os -g  $(INCLUDES) $(PROCESSOR_FLAGS) $(CFLAG_EXTRAS) -fdata-sections -ffunction-sections
+CFLAGS =  -c -Os -g  $(INCLUDES) $(PROCESSOR_FLAGS) $(CFLAG_EXTRAS) -Wall -Werror -fdata-sections -ffunction-sections
 
 INIT_LIBS = $(INIT_LIB_PREFIX)crti.o $(INIT_LIB_PREFIX)crtn.o
 
