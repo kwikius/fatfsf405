@@ -33,22 +33,17 @@
 
 #include "fatfs.h"
 
-
 static char SD_Path[4];  /* SD logical drive path filled by FatFS_LinkDriver*/
-
-/* USER CODE BEGIN Variables */
-
-/* USER CODE END Variables */    
 
 uint8_t MX_FATFS_Init(void) 
 {
   /*## FatFS: Link the SD driver ###########################*/
   return FATFS_LinkDriver(get_SD_Driver(), SD_Path);
-
-  /* USER CODE BEGIN Init */
-  /* additional user code for init */     
-  /* USER CODE END Init */
 }
+
+/*
+   may be able to get time from GPS or I2C RTC module?
+*/
 
 /**
   * @brief  Gets Time from RTC 
@@ -57,13 +52,9 @@ uint8_t MX_FATFS_Init(void)
   */
 DWORD get_fattime(void)
 {
-  /* USER CODE BEGIN get_fattime */
   return 0;
-  /* USER CODE END get_fattime */  
 }
 
-/* USER CODE BEGIN Application */
-     
-/* USER CODE END Application */
+
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
