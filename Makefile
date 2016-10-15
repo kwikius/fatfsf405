@@ -19,19 +19,15 @@ SIZ     = $(TOOLCHAIN_PREFIX)bin/arm-none-eabi-size
 STM32F4_LINKER_SCRIPT = system/stm32f4.ld
 
 INCLUDES = -I/home/andy/cpp/projects/fat_fs/Inc/  \
- -I/home/andy/cpp/projects/fat_fs/Drivers/STM32F4xx_HAL_Driver/Inc/ \
--I/home/andy/cpp/projects/fat_fs/Drivers/CMSIS/Device/ST/STM32F4xx/Include/ \
--I/home/andy/cpp/projects/fat_fs/Drivers/CMSIS/Include/ \
--I/home/andy/cpp/projects/fat_fs/Middlewares/Third_Party/FatFs/src/ \
--I/home/andy/cpp/projects/fat_fs/Middlewares/Third_Party/FatFs/src/drivers/ \
--I$(QUAN_INCLUDE_PATH)
+	-I/home/andy/cpp/projects/fat_fs/Drivers/STM32F4xx_HAL_Driver/Inc/ \
+	-I/home/andy/cpp/projects/fat_fs/Drivers/CMSIS/Device/ST/STM32F4xx/Include/ \
+	-I/home/andy/cpp/projects/fat_fs/Drivers/CMSIS/Include/ \
+	-I/home/andy/cpp/projects/fat_fs/Middlewares/Third_Party/FatFs/src/ \
+	-I/home/andy/cpp/projects/fat_fs/Middlewares/Third_Party/FatFs/src/drivers/ \
+	-I$(QUAN_INCLUDE_PATH)
 
 CFLAG_EXTRAS = -fno-math-errno -DQUAN_STM32F4 -DQUAN_NO_EXCEPTIONS -DSTM32F405xx -DSTM32F40_41xxx -DQUAN_SYSTICK_TIMER_UINT32 -DHSE_VALUE=8000000
 
-# CFLAG_EXTRAS += -DSTM32F4_TEST_AERFLITE_BOARD
-#CFLAG_EXTRAS += -DSTM32F4_TEST_QUANTRACKER_BOARD
-#CFLAG_EXTRAS += -Wl,-u,vsprintf -lm
-#CFLAG_EXTRAS += -DDEBUG
 CFLAG_EXTRAS += -Wall -Wno-unused-local-typedefs
 CFLAG_EXTRAS += -fmax-errors=1
 
@@ -64,7 +60,7 @@ fatfs_src_objects = $(patsubst %,$(OBJDIR)%, diskio.o ff.o ff_gen_drv.o)
 
 fatfs_driver_objects = $(patsubst %,$(OBJDIR)%, sd_diskio.o)
 
-stm32_objects  = $(patsubst %,$(OBJDIR)%,  stm32f4xx_hal_sd.o stm32f4xx_ll_sdmmc.o )
+stm32_objects  = $(patsubst %,$(OBJDIR)%, stm32f4xx_hal_sd.o stm32f4xx_ll_sdmmc.o )
 
 objects = $(Src_objects_C) $(user_objects_CXX) $(system_objects) $(fatfs_src_objects) $(fatfs_driver_objects) \
  $(OBJDIR)startup.o $(stm32_objects) 
