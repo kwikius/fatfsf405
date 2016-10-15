@@ -3,13 +3,12 @@
 
 const char* file_error_msg( FRESULT fr);
 
-bool write_file_test(const char * filename)
+bool write_file_test()
 {
-
+   const char * filename = "dummy.txt";
    serial_port::write("\n---- SD Card write test : opening \"");
    serial_port::write(filename);
-   serial_port::write("\"---------\n\n");
-
+   serial_port::write("\" ---------\n\n");
 
    FIL fil; 
    FRESULT fr  = f_open(&fil,filename, FA_CREATE_ALWAYS | FA_WRITE);
@@ -20,9 +19,9 @@ bool write_file_test(const char * filename)
       f_puts("Hello World\n",&fil);
       f_puts("-----------\n",&fil);
       f_close(&fil);
-      serial_port::write("\n--------------closed \"");
+      serial_port::write("\n-------------- closed \"");
       serial_port::write(filename);
-      serial_port::write(" \"----------------\n\n");
+      serial_port::write("\" ----------------\n\n");
       return true;
    }else{
       serial_port::write("file open failed\n");
