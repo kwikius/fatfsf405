@@ -22,11 +22,11 @@ bool test_read_file()
          serial_port::printf<sizeof line>("%s",line);
       }
       f_close(&fil);
+      serial_port::flush_tx();
       serial_port::write("\n-------------- closed \"");
       serial_port::write(filename);
       serial_port::write("\" ----------------\n\n");
-      
-      while (! serial_port::tx_reg_empty()) {asm volatile ("nop":::) ;}
+      serial_port::flush_tx();
       return true;
    }else{
       serial_port::write("file open failed\n");
