@@ -54,23 +54,17 @@ INIT_LIBS = $(INIT_LIB_PREFIX)crti.o $(INIT_LIB_PREFIX)crtn.o
 LFLAGS = -T$(STM32F4_LINKER_SCRIPT) -Os $(PROCESSOR_FLAGS) $(CFLAG_EXTRAS) $(INIT_LIBS) -nodefaultlibs -nostartfiles \
 --specs=nano.specs -Wl,--gc-sections
 
-Src_objects_C =  $(patsubst %,$(OBJDIR)%, bsp_driver_sd.o  fatfs.o  stm32f4xx_hal_msp.o  stm32f4xx_it.o)
+Src_objects_C =  $(patsubst %,$(OBJDIR)%, bsp_driver_sd.o  fatfs.o  stm32f4xx_it.o)
 
 user_objects_CXX =  $(patsubst %,$(OBJDIR)%, sd_card_init.o main.o test_suite.o read_file.o write_file.o file_error_msg.o)
 
-system_objects = $(patsubst %,$(OBJDIR)%, system_init.o setup.o led.o serial_port.o spbrk.o)
+system_objects = $(patsubst %,$(OBJDIR)%, system_init.o setup.o led.o serial_port.o spbrk.o sd_setup.o)
 
 fatfs_src_objects = $(patsubst %,$(OBJDIR)%, diskio.o ff.o ff_gen_drv.o)
 
 fatfs_driver_objects = $(patsubst %,$(OBJDIR)%, sd_diskio.o)
 
-#stm32_objects  = $(patsubst %,$(OBJDIR)%,  stm32f4xx_hal_cortex.o \
-#  stm32f4xx_hal_gpio.o stm32f4xx_hal_rcc.o stm32f4xx_hal_sd.o stm32f4xx_hal_tim.o \
-#  stm32f4xx_hal_tim_ex.o stm32f4xx_hal_uart.o stm32f4xx_hal_dma.o stm32f4xx_ll_sdmmc.o )
-
-stm32_objects  = $(patsubst %,$(OBJDIR)%,  stm32f4xx_hal_cortex.o \
-  stm32f4xx_hal_gpio.o stm32f4xx_hal_sd.o  \
-   stm32f4xx_ll_sdmmc.o )
+stm32_objects  = $(patsubst %,$(OBJDIR)%,  stm32f4xx_hal_sd.o stm32f4xx_ll_sdmmc.o )
 
 objects = $(Src_objects_C) $(user_objects_CXX) $(system_objects) $(fatfs_src_objects) $(fatfs_driver_objects) \
  $(OBJDIR)startup.o $(stm32_objects) 

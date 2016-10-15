@@ -341,14 +341,12 @@ static void SD_DMA_TxError(DMA_HandleTypeDef *hdma);
   */
 HAL_SD_ErrorTypedef HAL_SD_Init(SD_HandleTypeDef *hsd, HAL_SD_CardInfoTypedef *SDCardInfo)
 { 
-  __IO HAL_SD_ErrorTypedef errorstate = SD_OK;
-  SD_InitTypeDef tmpinit;
-  
   /* Allocate lock resource and initialize it */
   hsd->Lock = HAL_UNLOCKED;
   /* Initialize the low level hardware (MSP) */
   HAL_SD_MspInit(hsd);
   
+  SD_InitTypeDef tmpinit;
   /* Default SDIO peripheral configuration for SD card initialization */
   tmpinit.ClockEdge           = SDIO_CLOCK_EDGE_RISING;
   tmpinit.ClockBypass         = SDIO_CLOCK_BYPASS_DISABLE;
@@ -361,7 +359,7 @@ HAL_SD_ErrorTypedef HAL_SD_Init(SD_HandleTypeDef *hsd, HAL_SD_CardInfoTypedef *S
   SDIO_Init(hsd->Instance, tmpinit);
   
   /* Identify card operating voltage */
-  errorstate = SD_PowerON(hsd); 
+  __IO HAL_SD_ErrorTypedef errorstate = SD_PowerON(hsd); 
   
   if(errorstate != SD_OK)     
   {
