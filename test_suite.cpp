@@ -20,8 +20,6 @@ bool test(bool (*pfn)(), const char* name)
    }else{
        serial_port::write("FAIL");
    }
-   serial_port::write("\"\n");
-   serial_port::write(test_magic);
-   serial_port::write("}\n\n");
+   serial_port::write(" }\n\n");
    return result;
 }
