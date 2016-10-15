@@ -3,7 +3,7 @@
 
 const char* file_error_msg( FRESULT fr);
 
-bool read_file()
+bool test_read_file()
 {
    const char* filename = "dummy.txt";
 

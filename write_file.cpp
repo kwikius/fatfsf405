@@ -3,7 +3,7 @@
 
 const char* file_error_msg( FRESULT fr);
 
-bool write_file_test()
+bool test_write_file()
 {
    const char * filename = "dummy.txt";
    serial_port::write("\n---- SD Card write test : opening \"");
