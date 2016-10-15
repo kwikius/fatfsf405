@@ -4,17 +4,16 @@
 #include "../system/led.hpp"
 #include <quan/stm32/millis.hpp>
 
-void Error_Handler(void);
-
-bool read_file();
-
-bool write_file_test();
+bool test_read_file();
+bool test_write_file();
+bool test_mkdir();
 
 void SD_Card_Init();
 
 bool test(bool (*pfn)(), const char* name);
 
 namespace {
+
    struct fun_pair{
       typedef bool (*pfn_t)();
 
@@ -32,8 +31,9 @@ int main(void)
    SD_Card_Init();
 
    fun_pair fun_tests [] = {
-       {.pfn = write_file_test,.name = "write_file"}
-       ,{.pfn = read_file, .name = "read_file"}
+        {.pfn = test_mkdir, .name = "dir ops"}
+       ,{.pfn = test_write_file, .name = "write a file"}
+       ,{.pfn = test_read_file , .name = "read a file"}
    };
 
    for ( auto pr : fun_tests){
